@@ -1,6 +1,8 @@
 package com.example.calculator;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -47,18 +49,35 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.zero).setOnClickListener(this);
         findViewById(R.id.dian).setOnClickListener(this);
         findViewById(R.id.deng).setOnClickListener(this);
-        String string1 = load1();
-        String string2 = load2();
-        if (!string1.equals(null)){
-            editText.setText(string1);
+        int orientation = getResources().getConfiguration().orientation;    //获取当前布局状态
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE){        //如果是水平加载以下
+            findViewById(R.id.pi_btn).setOnClickListener(this);
+            findViewById(R.id.e_btn).setOnClickListener(this);
+            findViewById(R.id.abs_btn).setOnClickListener(this);
+            findViewById(R.id.asin_btn).setOnClickListener(this);
+            findViewById(R.id.acos_btn).setOnClickListener(this);
+            findViewById(R.id.atan_btn).setOnClickListener(this);
+            findViewById(R.id.pf_btn).setOnClickListener(this);
+            findViewById(R.id.lf_btn).setOnClickListener(this);
+            findViewById(R.id.ncf_btn).setOnClickListener(this);
+            findViewById(R.id.sin_btn).setOnClickListener(this);
+            findViewById(R.id.cos_btn).setOnClickListener(this);
+            findViewById(R.id.tan_btn).setOnClickListener(this);
+            findViewById(R.id.pfg_btn).setOnClickListener(this);
+            findViewById(R.id.lfg_btn).setOnClickListener(this);
+            findViewById(R.id.ncfg_btn).setOnClickListener(this);
+            findViewById(R.id.csc_btn).setOnClickListener(this);
+            findViewById(R.id.sec_btn).setOnClickListener(this);
+            findViewById(R.id.cot_btn).setOnClickListener(this);
+            findViewById(R.id.sdn_btn).setOnClickListener(this);
+            findViewById(R.id.ds_btn).setOnClickListener(this);
+            findViewById(R.id.log10_btn).setOnClickListener(this);
+            findViewById(R.id.ln_btn).setOnClickListener(this);
         }
-        if (!string2.equals(null)){
-            textView.setText(string2);
-        }
-
+        SharedPreferences preferences = getSharedPreferences("data",MODE_PRIVATE);
+        editText.setText(preferences.getString("et",""));
+        textView.setText(preferences.getString("tv",""));
     }
-
-
     @Override
     public void onClick(View v) {
         String str = editText.getText().toString();
@@ -75,16 +94,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.three:
             case R.id.zero:
                 if (str.equals("")){
-                    editText.setText(str+((Button)v).getText());
+                        editText.setText(str+((Button)v).getText());
 
                 }else if (str.equals("0")){
-                    editText.setText(((Button)v).getText());
+                        editText.setText(((Button)v).getText());
 
                 }else if (!str.equals("")){
+                        editText.setText(str+((Button)v).getText());
+                        Result();
+                }
+                break;
+            case R.id.e_btn:
+            case R.id.pi_btn:
+                if (str.equals("")){
                     editText.setText(str+((Button)v).getText());
-                    Result();
+                }else {
+                    if (str.endsWith(" ")){
+                        editText.setText(str+((Button)v).getText());
+                        aboutpiore();
+                    }else {
+                        editText.setText(((Button)v).getText());
+                    }
 
                 }
+
                 break;
             case R.id.dian:
                 if (str.equals("")){
@@ -120,7 +153,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         }
                     }
                 }
-
                 break;
             case R.id.chu:
             case R.id.cheng:
@@ -141,7 +173,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editText.setText(str_tv+" "+ ((Button)v).getText()+" ");
                     }
                 }
-
                 break;
             case R.id.deng:
                 if (str.equals("")){
@@ -151,8 +182,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editText.setText(str_tv);
                         textView.setText("");
                     }else if (str_tv.equals("")){
-                        editText.setText(str);
-                        textView.setText("");
+                        if (str.equals("π")){
+                            editText.setText(String.valueOf(Math.PI));
+                        }else if (str.equals("e")){
+                            editText.setText(String.valueOf(Math.E));
+                        }else {
+                            editText.setText(str);
+                            textView.setText("");
+                        }
                     }
                 }
                 break;
@@ -170,172 +207,145 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 textView.setText("");
                 editText.setText("");
                 break;
+            case R.id.abs_btn:
+                if (!str_tv.equals("")){
+                    String abs_et = String.valueOf(Math.abs(new Double(str_tv)));
+                    if (abs_et.endsWith("0")){
+                        editText.setText("|"+str_tv+"|");
+                        textView.setText(abs_et.substring(0,abs_et.indexOf(".")));
+                    }else {
+                        editText.setText("|"+str_tv+"|");
+                        textView.setText(abs_et);
+                    }
+                } else {
+                    if (!str.contains(" ")){
+                        String abs_et = String.valueOf(Math.abs(new Double(str)));
+                        if (abs_et.endsWith("0")){
+                            editText.setText("|"+str+"|");
+                            textView.setText(abs_et.substring(0,abs_et.indexOf(".")));
+                        }else {
+                            editText.setText("|"+str+"|");
+                            textView.setText(abs_et);
+                        }
+                    }
+                }
+                break;
             default:
                 break;
         }
-
     }
-
     public void Result(){
-
         String str = editText.getText().toString();
         String str1;
         String str2;
         String str3;
-
-
         if (!str.equals("")){
             if (str.contains(" ")){
-                str1 = str.substring(0,str.indexOf(" "));
-                str2 = str.substring(str.indexOf(" ")+3);
-                str3 = String.valueOf(str.charAt(str.indexOf(" ")+1));
-                double a = new Double(str1);
-                double b = new Double(str2);
-                double result;
-                if (str3.equals("＋")){
-                    result = a+b;
-                    String str_res = String.valueOf(result);
-                    if (String.valueOf(result).endsWith("0")){
-                        textView.setText(str_res.substring(0,str_res.indexOf(".")));
-                    }else {
+                if (str.contains("π")||str.contains("e")){
+                    aboutpiore();
+                }else {
 
-                        textView.setText(String.valueOf(result));
-                    }
-                }else if (str3.equals("－")){
-                    result = a-b;
-                    String str_res = String.valueOf(result);
-                    if (String.valueOf(result).endsWith("0")){
-                        textView.setText(str_res.substring(0,str_res.indexOf(".")));
-                    }else {
-
-                        textView.setText(String.valueOf(result));
-                    }
-                }else if (str3.equals("×")){
-                    result = a*b;
-                    String str_res = String.valueOf(result);
-                    if (String.valueOf(result).endsWith("0")){
-                        textView.setText(str_res.substring(0,str_res.indexOf(".")));
-                    }else {
-
-                        textView.setText(String.valueOf(result));
-                    }
-                }else if (str3.equals("÷")){
-                    if (Integer.parseInt(str2) == 0){
-                        Toast.makeText(this,"除数不能为零",Toast.LENGTH_SHORT).show();
-                    }else {
-                        result = a/b;
-                        String str_res = String.valueOf(result);
-                        if (String.valueOf(result).endsWith("0")){
-                            textView.setText(str_res.substring(0,str_res.indexOf(".")));
-                        }else {
-
-                            textView.setText(String.valueOf(result));
-                        }
-                    }
+                    str1 = str.substring(0,str.indexOf(" "));
+                    str2 = str.substring(str.indexOf(" ")+3);
+                    str3 = String.valueOf(str.charAt(str.indexOf(" ")+1));
+                    double a = new Double(str1);
+                    double b = new Double(str2);
+                    aandb(a,b,str3,str2);
                 }
             }else if (!str.equals(" ")){
                 editText.setText(str);
             }
         }
     }
-
     @Override
-    protected void onDestroy() {
+    protected void onDestroy() {        //保存逻辑
         super.onDestroy();
         String inputText = editText.getText().toString();
         String string = textView.getText().toString();
-        save(inputText);
-        saves(string);
+        SharedPreferences.Editor editor = getSharedPreferences("data",MODE_PRIVATE).edit();
+        editor.putString("et",inputText);
+        editor.putString("tv",string);
+        editor.apply();
     }
-    public void save(String inputText){
-        FileOutputStream out = null;
-        BufferedWriter writer = null;
-        try {
-            out = openFileOutput("data1", Context.MODE_PRIVATE);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(inputText);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-
-            try {
-                if (writer!=null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-    public void saves(String inputText){
-        FileOutputStream out = null;
-        BufferedWriter writer = null;
-        try {
-            out = openFileOutput("data2", Context.MODE_PRIVATE);
-            writer = new BufferedWriter(new OutputStreamWriter(out));
-            writer.write(inputText);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-
-            try {
-                if (writer!=null) {
-                    writer.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-        }
-    }
-    public String load1(){
-        FileInputStream in = null;
-        BufferedReader reader = null;
-        StringBuilder content = new StringBuilder();
-        try {
-            in = openFileInput("data1");
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine())!=null){
-                content.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (reader!=null){
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+    public void aandb(double a,double b,String str3,String str2){       //加减乘除计算逻辑
+        double result;
+        if (str3.equals("＋")){
+            result = a+b;
+            String str_res = String.valueOf(result);
+            qcmw(result,str_res);
+        }else if (str3.equals("－")){
+            result = a-b;
+            String str_res = String.valueOf(result);
+            qcmw(result,str_res);
+        }else if (str3.equals("×")){
+            result = a*b;
+            String str_res = String.valueOf(result);
+            qcmw(result,str_res);
+        }else if (str3.equals("÷")){
+            if (Integer.parseInt(str2) == 0){
+                Toast.makeText(this,"除数不能为零",Toast.LENGTH_SHORT).show();
+            }else {
+                result = a/b;
+                String str_res = String.valueOf(result);
+                qcmw(result,str_res);
             }
         }
-        return content.toString();
-    }
 
-    public String load2(){
-        FileInputStream in = null;
-        BufferedReader reader = null;
-        StringBuilder content = new StringBuilder();
-        try {
-            in = openFileInput("data2");
-            reader = new BufferedReader(new InputStreamReader(in));
-            String line = "";
-            while ((line = reader.readLine())!=null){
-                content.append(line);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }finally {
-            if (reader!=null){
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
+    }
+    public void qcmw(double result,String str_res){         //去除末尾0
+        if (String.valueOf(result).endsWith("0")){
+            textView.setText(str_res.substring(0,str_res.indexOf(".")));
+        }else {
+
+            textView.setText(String.valueOf(result));
+        }
+    }
+    public void aboutpiore(){
+        String str = editText.getText().toString();
+        String str1;
+        String str2;
+        String str3;
+        str1 = str.substring(0,str.indexOf(" "));
+        str2 = str.substring(str.indexOf(" ")+3);
+        str3 = String.valueOf(str.charAt(str.indexOf(" ")+1));
+        if (str.contains(" ")){
+            if (str1.equals("π")){
+                double a = Math.PI;
+                if (str2.equals("π")){
+                    double b = Math.PI;
+                    aandb(a,b,str3,str2);
+                }else if (str2.equals("e")){
+                    double b = Math.E;
+                    aandb(a,b,str3,str2);
+                }else {
+                    double b = new Double(str2);
+                    aandb(a,b,str3,str2);
+                }
+            }else if (str1.equals("e")){
+                double a = Math.E;
+                if (str2.equals("π")){
+                    double b = Math.PI;
+                    aandb(a,b,str3,str2);
+                }else if (str2.equals("e")){
+                    double b = Math.E;
+                    aandb(a,b,str3,str2);
+                }else {
+                    double b = new Double(str2);
+                    aandb(a,b,str3,str2);
+                }
+            }else{
+                double a = new Double(str1);
+                if (str2.equals("π")){
+                    double b = Math.PI;
+                    aandb(a,b,str3,str2);
+                }else if (str2.equals("e")){
+                    double b = Math.E;
+                    aandb(a,b,str3,str2);
+                }else {
+                    double b = new Double(str2);
+                    aandb(a,b,str3,str2);
                 }
             }
         }
-        return content.toString();
     }
 }
