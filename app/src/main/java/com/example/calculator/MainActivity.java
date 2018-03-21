@@ -84,22 +84,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             case R.id.two:
             case R.id.three:
             case R.id.zero:
-                if (str.equals("")){
-                    editText.setText(str+((Button)v).getText());
-
-                }else if (str.equals("0")){
-                    editText.setText(((Button)v).getText());
-
-                }else if (!str.equals("")){
-                    if (str.contains("(")){
-                        editText.setText(str.substring(0,str.length())+((Button)v).getText());
-                        sjhs();
+                if (str.contains("√")){
+                    if (str.contains("³")){
+                        editText.setText(str+((Button)v).getText());
+                        textView.setText(String.valueOf(Math.cbrt(new Double(str.substring(str.indexOf("√")+2)))));
                     }else {
-                        if (str.endsWith("π")||str.endsWith("e")){
-                            editText.setText(str.substring(0,str.length()-1)+((Button)v).getText());
+                        editText.setText(str+((Button)v).getText());
+                        textView.setText(String.valueOf(Math.sqrt(new Double(str.substring(str.indexOf("√")+2)))));
+                    }
+                }else {
+                    if (str.equals("")){
+                        editText.setText(str+((Button)v).getText());
+
+                    }else if (str.equals("0")){
+                        editText.setText(((Button)v).getText());
+
+                    }else if (!str.equals("")){
+                        if (str.contains("(")){
+                            if (str.endsWith("π")||str.endsWith("e")){
+                                editText.setText(str.substring(0,str.length()-1)+((Button)v).getText());
+                                sjhs();
+                            }else {
+                                editText.setText(str+((Button)v).getText());
+                                sjhs();
+                            }
                         }else {
-                            editText.setText(str+((Button)v).getText());
-                            Result();
+                            if (str.endsWith("π")||str.endsWith("e")){
+                                editText.setText(str.substring(0,str.length()-1)+((Button)v).getText());
+                            }else {
+                                editText.setText(str+((Button)v).getText());
+                                Result();
+                            }
                         }
                     }
                 }
@@ -113,7 +128,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editText.setText(str+((Button)v).getText());
                         aboutpiore();
                     }else {
-                        editText.setText(((Button)v).getText());
+                        if (str.endsWith("(")){
+                            editText.setText(str+((Button)v).getText());
+                            sjhs();
+                        }else {
+                            editText.setText(((Button)v).getText());
+                            textView.setText("");
+                        }
                     }
 
                 }
@@ -218,17 +239,77 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         textView.setText(abs_et);
                     }
                 } else {
-                    if (!str.contains(" ")){
-                        String abs_et = String.valueOf(Math.abs(new Double(str)));
-                        if (abs_et.endsWith("0")){
-                            editText.setText("|"+str+"|");
-                            textView.setText(abs_et.substring(0,abs_et.indexOf(".")));
+                    if (!str.equals("")){
+                        if (!str.contains(" ")){
+                            if (!str.contains("(")){
+                                String abs_et = String.valueOf(Math.abs(new Double(str)));
+                                if (abs_et.endsWith("0")){
+                                    editText.setText("|"+str+"|");
+                                    textView.setText(abs_et.substring(0,abs_et.indexOf(".")));
+                                }else {
+                                    editText.setText("|"+str+"|");
+                                    textView.setText(abs_et);
+                                }
+                            }else {
+                                editText.setText(str);
+                            }
+                        }
+                    }else {
+                        editText.setText("");
+                        textView.setText("");
+                    }
+                }
+                break;
+            case R.id.pf_btn:
+                if (!str_tv.equals("")){
+                    editText.setText(str_tv+"^2");
+                    double tv = new Double(str_tv);
+                    textView.setText(String.valueOf(tv*tv));
+                }else {
+                    if (!str.equals("")){
+                        if (!str.contains("(")){
+                            if (!str.contains(" ")){
+                                editText.setText(str_tv+"^2");
+                                double tv = new Double(str_tv);
+                                textView.setText(String.valueOf(tv*tv));
+                            }else {
+                                editText.setText(str);
+                                textView.setText("");
+                            }
                         }else {
-                            editText.setText("|"+str+"|");
-                            textView.setText(abs_et);
+                            editText.setText(str);
+                            textView.setText("");
                         }
                     }
                 }
+                break;
+            case R.id.lf_btn:
+                if (!str_tv.equals("")){
+                    editText.setText(str_tv+"^3");
+                    double tv = new Double(str_tv);
+                    textView.setText(String.valueOf(tv*tv*tv));
+                }else {
+                    if (!str.equals("")){
+                        if (!str.contains("(")){
+                            if (!str.contains(" ")){
+                                editText.setText(str_tv+"^3");
+                                double tv = new Double(str_tv);
+                                textView.setText(String.valueOf(tv*tv*tv));
+                            }else {
+                                editText.setText(str);
+                                textView.setText("");
+                            }
+                        }else {
+                            editText.setText(str);
+                            textView.setText("");
+                        }
+                    }
+                }
+                break;
+            case R.id.pfg_btn:
+            case R.id.lfg_btn:
+                editText.setText(((Button)v).getText()+"(");
+                textView.setText("");
                 break;
             case R.id.asin_btn:
             case R.id.acos_btn:
@@ -247,11 +328,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         editText.setText(((Button)v).getText()+"(");
                         textView.setText("");
                     }else {
-
-                        if (!str.contains("(")){
-                            editText.setText(str+" "+"×"+" "+((Button)v).getText()+"(");
-                            textView.setText("");
-                        }else {
+                        if (!str.contains(" ")){
+                            if (!str.contains("(")){
+                                editText.setText(str+" "+"×"+" "+((Button)v).getText()+"(");
+                                textView.setText("");
+                            }else {
+                                editText.setText(((Button)v).getText()+"(");
+                                textView.setText("");
+                            }
+                        }else{
                             editText.setText(((Button)v).getText()+"(");
                             textView.setText("");
                         }
@@ -287,65 +372,80 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
     public void sjhs(){
         String str = editText.getText().toString();
+        String str_jdz = str.substring(str.indexOf("(")+1);
+        if (str_jdz.equals("π")){
+            double jdz = Math.PI*Math.PI/180;
+            jssjhs(jdz);
+        }else if (str_jdz.equals("e")){
+            double jdz = Math.E*Math.PI/180;
+            jssjhs(jdz);
+        }else {
+            double jdz = new Double(str.substring(str.indexOf("(")+1))*Math.PI/180;
+            jssjhs(jdz);
+        }
+    }
+    public void jssjhs(double jdz){
+        String str = editText.getText().toString();
         if (str.substring(0,str.indexOf("(")).contains(" ")){
             String str_sjhs = str.substring(str.indexOf(" ")+3,str.indexOf("("));
+            double str_start = new Double(str.substring(0,str.indexOf(" ")));
             if (str_sjhs.equals("asin")){
-                textView.setText(String.valueOf((float)Math.asin(new Double(str.substring(str.indexOf("(")+1,str.length()-2))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.asin(jdz)*str_start));
             }
             if (str_sjhs.equals("acos")){
-                textView.setText(String.valueOf((float)Math.acos(new Double(str.substring(str.indexOf("(")+1,str.length()-2))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.acos(jdz)*str_start));
             }
             if (str_sjhs.equals("atan")){
-                textView.setText(String.valueOf((float)Math.atan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.atan(jdz)*str_start));
             }
             if (str_sjhs.equals("sin")){
-                textView.setText(String.valueOf((float)Math.sin(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.sin(jdz)*str_start));
             }
             if (str_sjhs.equals("cos")){
-                textView.setText(String.valueOf((float)Math.cos(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.cos(jdz)*str_start));
             }
             if (str_sjhs.equals("tan")){
-                textView.setText(String.valueOf((float)Math.tan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.tan(jdz)*str_start));
             }
             if (str_sjhs.equals("csc")){
-                textView.setText(String.valueOf((float)1/Math.sin(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.sin(jdz)*str_start));
             }
             if (str_sjhs.equals("sec")){
-                textView.setText(String.valueOf((float)1/Math.cos(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.cos(jdz)*str_start));
             }
             if (str_sjhs.equals("cot")){
-                textView.setText(String.valueOf((float)1/Math.tan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.tan(jdz)*str_start));
             }
 
         }else {
             String str_sjhs = str.substring(0,str.indexOf("("));
 
             if (str_sjhs.equals("asin")){
-                textView.setText(String.valueOf((float)Math.asin(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.asin(jdz)));
             }
             if (str_sjhs.equals("acos")){
-                textView.setText(String.valueOf((float)Math.acos(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.acos(jdz)));
             }
             if (str_sjhs.equals("atan")){
-                textView.setText(String.valueOf((float)Math.atan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.atan(jdz)));
             }
             if (str_sjhs.equals("sin")){
-                textView.setText(String.valueOf((float)Math.sin(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.sin(jdz)));
             }
             if (str_sjhs.equals("cos")){
-                textView.setText(String.valueOf((float)Math.cos(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.cos(jdz)));
             }
             if (str_sjhs.equals("tan")){
-                textView.setText(String.valueOf((float)Math.tan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)Math.tan(jdz)));
             }
             if (str_sjhs.equals("csc")){
-                textView.setText(String.valueOf((float)1/Math.sin(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.sin(jdz)));
             }
             if (str_sjhs.equals("sec")){
-                textView.setText(String.valueOf((float)1/Math.cos(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.cos(jdz)));
             }
             if (str_sjhs.equals("cot")){
-                textView.setText(String.valueOf((float)1/Math.tan(new Double(str.substring(str.indexOf("(")+1))*Math.PI/180)));
+                textView.setText(String.valueOf((float)1/Math.tan(jdz)));
             }
         }
     }
